@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rahaman Store - Premium</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <!-- === PREMIUM WELCOME SCREEN === -->
+    <div id="welcomeScreen" class="welcome-overlay">
+        <div class="welcome-content">
+            <div class="neon-cart-container">
+                <i class="fa-solid fa-cart-shopping neon-cart"></i>
+                <span class="neon-dot"></span>
+            </div>
+            
+            <h2 class="welcome-text">Welcome to</h2>
+            <h1 class="brand-gold">RAHAMAN STORE</h1>
+            <p class="sub-text">Premium Shopping</p>
+            
+            <!-- Loading Dots -->
+            <div class="gold-loader">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <header>
+        <div class="header-main">
+            <div class="store-profile">
+                <div class="store-icon"><i class="fa-solid fa-store"></i></div>
+                <div class="header-text">
+                    <h1 class="store-name">RAHAMAN STORE</h1>
+                    <span class="verified-badge"><i class="fa-solid fa-check-circle"></i> Verified</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-item" onclick="openSortModal()">
+            <i class="fa-solid fa-arrow-up-wide-short"></i> Sort
+        </div>
+        <div class="filter-item" onclick="openFilterModal('price')">
+            Price <i class="fa-solid fa-angle-down"></i>
+        </div>
+        <div class="filter-item" onclick="openFilterModal('rating')">
+            Rating <i class="fa-solid fa-angle-down"></i>
+        </div>
+        <div class="filter-item" onclick="openFilterModal('all')">
+            <i class="fa-solid fa-filter"></i> Filters
+        </div>
+    </div>
+
+    <!-- Product Grid Area -->
+    <div class="main-container">
+        <h3 class="section-title">All Products (<span id="pCount">0</span>)</h3>
+        <div class="product-grid" id="productGrid">
+            <!-- Products will load here -->
+        </div>
+    </div>
+
+    <!-- 1. SORT MODAL -->
+    <div id="sortModal" class="modal-overlay">
+        <div class="bottom-sheet">
+            <div class="sheet-header">
+                <span>SORT OPTIONS</span>
+                <span class="close-btn" onclick="closeSortModal()">×</span>
+            </div>
+            <div class="sort-options">
+                <label class="radio-row">Relevance <input type="radio" name="sort" value="relevance" checked></label>
+                <label class="radio-row">Price (High to Low) <input type="radio" name="sort" value="high"></label>
+                <label class="radio-row">Price (Low to High) <input type="radio" name="sort" value="low"></label>
+                <label class="radio-row">Ratings <input type="radio" name="sort" value="rating"></label>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FILTER MODAL -->
+    <div id="filterModal" class="modal-overlay">
+        <div class="filter-sheet">
+            <div class="sheet-header">
+                <span>FILTERS</span>
+                <span class="close-btn" onclick="closeFilterModal()">×</span>
+            </div>
+            <div class="filter-body">
+                <div class="filter-sidebar">
+                    <div class="sidebar-item active" onclick="switchFilterTab('ratingTab', this)">Rating</div>
+                    <div class="sidebar-item" onclick="switchFilterTab('priceTab', this)">Price</div>
+                    <div class="sidebar-item" onclick="switchFilterTab('comboTab', this)">Combo</div>
+                </div>
+                <div class="filter-content">
+                    <div id="ratingTab" class="tab-content active">
+                        <label class="check-row"><input type="checkbox" value="4"> 4.0 and above</label>
+                        <label class="check-row"><input type="checkbox" value="3"> 3.0 and above</label>
+                        <label class="check-row"><input type="checkbox" value="2"> 2.0 and above</label>
+                    </div>
+                    <div id="priceTab" class="tab-content">
+                        <div class="price-pills" id="dynamicPriceContainer"></div>
+                    </div>
+                    <div id="comboTab" class="tab-content">
+                        <div id="dynamicComboContainer"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="filter-footer">
+                <button class="btn-clear" onclick="clearAllFilters()">Clear All</button>
+                <button class="btn-done" onclick="applyFilters()">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. CHOICE MODAL (Direct or WhatsApp) -->
+    <div id="choiceModal" class="modal-overlay" style="align-items: center; justify-content: center;">
+        <div class="choice-box">
+            <span class="close-choice" onclick="closeChoiceModal()">×</span>
+            <h3>How do you want to buy?</h3>
+            <p class="choice-product-name" id="choiceTitle">Product Name</p>
+            
+            <button class="btn-choice direct" onclick="proceedDirect()">
+                <i class="fa-solid fa-globe"></i> Direct Buy (Website)
+            </button>
+            
+            <div class="or-divider">OR</div>
+            
+            <button class="btn-choice whatsapp" onclick="openWaForm()">
+                <i class="fa-brands fa-whatsapp"></i> Order on WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- 4. WHATSAPP ORDER FORM (Dark Theme + Mobile + Note) -->
+    <div id="waOrderModal" class="modal-overlay">
+        <div class="bottom-sheet wa-theme-sheet">
+            <div class="wa-header">
+                <h3>Order Now</h3>
+                <p>Order ID: #<span id="waOrderId">1234</span></p>
+                <span class="close-wa" onclick="closeWaForm()">×</span>
+            </div>
+            
+            <div class="wa-body">
+                <!-- Product Name -->
+                <div class="wa-input-group">
+                    <label>Selected Product</label>
+                    <input type="text" id="waProduct" readonly value="Selected Product" style="opacity: 0.7;">
+                </div>
+
+                <!-- Name -->
+                <div class="wa-input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="waName" placeholder="Enter your full name">
+                </div>
+
+                <!-- NEW: Contact Number -->
+                <div class="wa-input-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="waMobile" placeholder="Ex: 9876543210" maxlength="10">
+                </div>
+
+                <!-- Quantity -->
+                <div class="wa-input-group">
+                    <label>Quantity</label>
+                    <input type="number" id="waQty" value="1" min="1" onchange="updateWaTotal()">
+                </div>
+
+                <!-- Address -->
+                <div class="wa-input-group">
+                    <label>Delivery Address</label>
+                    <textarea id="waAddress" placeholder="House No, Street, City, Pincode" rows="2"></textarea>
+                </div>
+
+                <!-- Price Box -->
+                <div class="wa-price-box">
+                    <div class="wa-row">
+                        <span>Unit Price</span>
+                        <span>₹<span id="waUnitPrice">0</span></span>
+                    </div>
+                    <div class="wa-row total">
+                        <span>Total Bill</span>
+                        <span>₹<span id="waTotal">0</span></span>
+                    </div>
+                </div>
+
+                <div class="wa-note">
+                    <p>* Payment QR Code will be sent on WhatsApp.</p>
+                </div>
+
+                <button class="wa-send-btn" onclick="sendToWhatsapp()">
+                    Place Order on WhatsApp <i class="fa-brands fa-whatsapp"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="products.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
